@@ -25,6 +25,7 @@
   * [read()](http://man7.org/linux/man-pages/man2/read.2.html)
   * [write()](http://man7.org/linux/man-pages/man2/write.2.html)
   * [close()](http://man7.org/linux/man-pages/man2/close.2.html)
+  * [Stack Overflow 1](https://unix.stackexchange.com/questions/315151/whats-the-last-character-in-a-file)
 
 #### Device I/O Calls :-
    
