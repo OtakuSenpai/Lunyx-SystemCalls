@@ -12,25 +12,13 @@
 #define LUNYX_SYSTEMCALLS_PROCESSCALLS_HPP
 
 namespace Lunyx {
-    enum class Calls {
-        none = -1,
-        fork = 0,
-        exit = 1,
-        wait = 2,
-    };
-
     class ProcessCalls {
     private:
 
         pid_t retValue = 0;
-        Calls processCalls = Calls::none;
 
     public:
         ProcessCalls() {}
-
-        ProcessCalls(const Calls& call) {
-            processCalls = call;
-        }
 
         ~ProcessCalls() {}
 

@@ -14,6 +14,8 @@
   * [fork()](http://man7.org/linux/man-pages/man2/fork.2.html) 
   * [exit()](https://linux.die.net/man/2/exit)
   * [wait()](http://man7.org/linux/man-pages/man2/wait.2.html)
+  * [sleep()](http://man7.org/linux/man-pages/man3/sleep.3.html)
+  * [GDB Fork Debugging](https://sourceware.org/gdb/onlinedocs/gdb/Forks.html)
   
 ### For I/O System Calls :-
    
