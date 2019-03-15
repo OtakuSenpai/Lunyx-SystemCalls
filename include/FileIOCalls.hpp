@@ -7,8 +7,6 @@
 
 #include <string>
 
-#include "helpers.hpp"
-
 namespace Lunyx {
     class FileIOCalls {
     private:
@@ -24,6 +22,8 @@ namespace Lunyx {
         void write_data();
 
         std::string& read_data();
+
+        std::string& read_data(size_t count);
     };
 }
 

@@ -6,13 +6,7 @@
 #define LUNYX_SYSTEMCALLS_HELPERS_HPP
 
 namespace Lunyx {
-    int num_of_slashes(const std::string& file) {
-        int count = 0;
-        for(auto c : file)
-            if(c == '/') ++count;
-
-        return count;
-    }
+    int num_of_slashes(const std::string& file);
 }
 
 #endif //LUNYX_SYSTEMCALLS_HELPERS_HPP
