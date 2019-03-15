@@ -15,18 +15,32 @@ using namespace Lunyx;
 FileIOCalls::FileIOCalls(const std::string& file) {
     filename = file;
     int count = Lunyx::num_of_slashes(file);
-    std::string temp, tempFile = file;
-    for(auto v = tempFile[0]; v != '\0'; v++) {
+    std::cout << "Count: " << count << std::endl;
+    std::string temp, tempFile = file,path;
+
+    do {
+        std::cout << "\nCount: " << count << std::endl;
         if(count > 0) {
-            temp = tempFile.substr(0,tempFile.find(v));
-            tempFile = tempFile.substr(tempFile.find(v) + 1, tempFile.length());
-                    --count;
-            open(temp.c_str(),O_CREAT | O_DIRECTORY);
+            path = tempFile.substr(0, tempFile.find('/'));
+            temp = tempFile.substr(tempFile.find('/') + 1, tempFile.length());
+            tempFile = temp;
+            std::cout << "Path: " << path << std::endl;
+            std::cout << "Temp: " << temp << std::endl;
+            std::cout << "TempFile: " << tempFile << std::endl;
+            chdir(path.c_str());
+            --count;
         }
-        else {
-            file_desc = open(temp.c_str(), O_CREAT | O_RDWR);
-        }
+    } while(count != 0);
+
+    if(count == 0) {
+        std::cout << "Path: " << path << std::endl;
+        chdir(path.c_str());
+        temp = temp.substr(temp.find('/') + 1, temp.length());
+        file_desc = open(temp.c_str(), O_CREAT | O_RDWR);
     }
+
+    if(file_desc == -1)
+        throw std::runtime_error("Error in FileIOCalls : Unable to open file!!");
 }
 
 void FileIOCalls::write_data() {
