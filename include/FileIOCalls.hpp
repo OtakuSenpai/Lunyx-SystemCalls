@@ -17,12 +17,13 @@ namespace Lunyx {
 
     public:
         FileIOCalls() {}
+        ~FileIOCalls();
 
         FileIOCalls(const std::string& file);
 
-        void write();
+        void write_data();
 
-        std::string& read();
+        std::string& read_data();
     };
 }
 

@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <unistd.h>
 #include <fcntl.h>
 
 #include "FileIOCalls.hpp"
@@ -30,15 +31,14 @@ FileIOCalls::FileIOCalls(const std::string& file) {
     }
 }
 
-void FileIOCalls::write() {
+void FileIOCalls::write_data() {
     std::string input;
 
     do {
         std::cin >> input;
-        void* temp = reinterpret_cast<void*>(const_cast<char*>(input.c_str()));
-        const void* buf = temp;
-
-        int ret = write(file_desc,buf,input.length());
+        const void* buf = input.c_str();
+        size_t size = (size_t) input.length();
+        int ret = write(file_desc,buf,size);
         if(ret == -1)
             throw std::runtime_error("Error in FileIOCall.cpp : Failed to write to file!!!");
         else
@@ -46,7 +46,7 @@ void FileIOCalls::write() {
     } while(input[input.size() - 1] != '\n');
 }
 
-std::string& FileIOCalls::read() {
+std::string& FileIOCalls::read_data() {
     std::string input;
     void* buffer;
 
@@ -65,4 +65,10 @@ std::string& FileIOCalls::read() {
     } while(input[input.size() - 1] != '\n');
 
     return input;
+}
+
+FileIOCalls::~FileIOCalls() {
+    int ret = close(file_desc);
+    if(ret == -1)
+        throw std::runtime_error("Error in FileIOCalls : Couldn't close the file!!!");
 }
