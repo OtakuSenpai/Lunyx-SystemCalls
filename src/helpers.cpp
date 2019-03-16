@@ -60,44 +60,52 @@ std::string Lunyx::find_errno(const int& error_code) {
     return retValue;
 }
 
-Lunyx::FilePath Lunyx::FilePath(const std::string& path) {
+Lunyx::FilePath::FilePath(const std::string& path) {
     absolute_path = path;
     slash_count = num_of_slashes(path);
 
     std::string temp, tempFile = path,file;
     size_t count = slash_count;
 
+    bool first = true;
+
     do {
         std::cout << "\nCount: " << count << std::endl;
         if(count > 0) {
             file = tempFile.substr(0, tempFile.find('/'));
-            pathname +=file;
             temp = tempFile.substr(tempFile.find('/') + 1, tempFile.length());
             tempFile = temp;
-            pathname += temp;
+
+            if(pathname == "/" || first) {
+                first = false;
+                continue;
+            }
+            else if(!first)
+                pathname = pathname + '/' + file;
+
+            if(temp.find('/') == std::string::npos)
+                break;
+
             std::cout << "Path: " << pathname << std::endl;
             std::cout << "Temp: " << temp << std::endl;
             std::cout << "TempFile: " << tempFile << std::endl;
+
             --count;
         }
-    } while(count != 0);
+    } while(count != 1);
 
-    if(count == 0) {
-        std::cout << "Path: " << pathname << std::endl;
-        std::cout << "File: " << file << std::endl;
-        chdir(path.c_str());
-        temp = temp.substr(temp.find('/') + 1, temp.length());
-        filename = file;
-        // file_desc = open(temp.c_str(), O_CREAT | O_RDWR, 0644);
+    filename = temp.substr(temp.find('/') + 1,temp.size());
+}
+
+
+void Lunyx::FilePath::cd_path() {
+
+    std::string temp1, temp2, tmpPath = pathname;
+
+    while(auto v = (pathname.find('/') != std::string::npos)) {
+        temp1 = tmpPath.substr(0, v);
+        temp2 = temp1;
+        temp1 = temp2.substr(v + 1, temp2.length());
+        std::cout << "temp is: " << temp1 << std::endl;
     }
 }
-/*
-void Lunyx::FilePath::cd_path(const std::string &path, const size_t& slash_count) {
-
-
-
-
-
-}
-
-*/

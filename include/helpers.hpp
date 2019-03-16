@@ -22,7 +22,7 @@ namespace Lunyx {
         // Used in finding the directory path in FileIOCalls
         int num_of_slashes(const std::string& file);
 
-        void cd_path(const std::string &path, const size_t& slash_count);
+        void cd_path();
     };
 
 }

@@ -80,9 +80,12 @@ int main(int argc, char** argv) {
     std::string file("/home/neel/test/foo");
 
     Lunyx::FilePath fp(file);
+
     std::cout << "Filename is: " << fp.filename << std::endl
               << "Pathname is: " << fp.pathname << std::endl
               << "Absolute path is: " << fp.absolute_path << std::endl;
+
+    fp.cd_path();
 
     return 0;
 }
