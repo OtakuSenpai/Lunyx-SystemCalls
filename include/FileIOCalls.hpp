@@ -7,19 +7,21 @@
 
 #include <string>
 
+#include "helpers.hpp"
+
 namespace Lunyx {
     class FileIOCalls {
     private:
         std::string filename;
+        Lunyx::FilePath fp;
         size_t file_desc = 0;
 
     public:
-        FileIOCalls() {}
-        ~FileIOCalls();
-
         FileIOCalls(const std::string& file);
 
-        void write_data();
+        ~FileIOCalls();
+
+        size_t write_data(const std::string& input);
 
         std::string& read_data();
 

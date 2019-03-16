@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 
-project(Luny_SysCalls)
+project(Lunyx_SysCalls)
 
 set(CMAKE_CXX_EXTENSIONS 11)
 
