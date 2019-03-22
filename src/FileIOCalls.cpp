@@ -13,21 +13,16 @@
 
 using namespace Lunyx;
 
-FileIOCalls::FileIOCalls(const std::string& file) : filename(file), fp(file) {
-    int count = fp.num_of_slashes(file);
-    std::cout << "Count: " << count << std::endl;
+FileIOCalls::FileIOCalls(const std::string& file) : fp(file) {
 
-
-
-
-
+    file_desc = open(fp.absolute_path.c_str(),O_RDWR);
 
     if(file_desc == -1)
         throw std::runtime_error("Error in FileIOCalls : Unable to open file!!\nError is: " + Lunyx::find_errno(errno));
 }
 
 size_t FileIOCalls::write_data(const std::string& input) {
-    file_desc = open(filename.c_str(),O_RDWR);
+    file_desc = open(filename.c_str(),O_WRONLY);
 
     if(file_desc == -1)
         throw std::runtime_error("Error in FileIOCalls : Unable to open file!!\nError is: " + Lunyx::find_errno(errno));
@@ -54,52 +49,51 @@ size_t FileIOCalls::write_data(const std::string& input) {
     return ret;
 }
 
-std::string& FileIOCalls::read_data() {
-    std::string input;
+std::string FileIOCalls::read_data() {
     void* buffer;
+    char input;
+    std::string retValue;
 
     do {
-        std::cin >> input;
-
-        int ret = read(file_desc,buffer,1000);
-        if(ret > 0) {
-            input = std::string(const_cast<const char*>(reinterpret_cast<char*>(buffer)));
+        int ret = read(file_desc,buffer,1);
+        if(ret > 0) { // Successful Read
+            input = *reinterpret_cast<char*>(buffer);
             std::cout << "\nNumber of bytes read: " << ret << std::endl;
+            retValue = retValue + input;
         }
-        else if(ret == 0)
+        else if(ret == 0) // EOF
             std::cout << "EOF detected!!!" << std::endl;
-        else
-            throw std::runtime_error("Error in FileIOCall.cpp : Failed to read from file!!!\n is: " + Lunyx::find_errno(errno));
-    } while(input[input.size() - 1] != '\n');
-
-    return input;
-}
-
-std::string& FileIOCalls::read_data(size_t count) {
-    std::string input;
-    void* buffer;
-
-    do {
-        std::cin >> input;
-
-        int ret = read(file_desc,buffer,count);
-        if(ret > 0) {
-            input = std::string(const_cast<const char*>(reinterpret_cast<char*>(buffer)));
-            std::cout << "\nNumber of bytes read: " << ret << std::endl;
-        }
-
-        else if(ret == 0) {
-            std::cout << "EOF detected!!!" << std::endl;
-            break;
-        }
-
         else
             throw std::runtime_error("Error in FileIOCall.cpp : Failed to read from file!!!\nError is: " + Lunyx::find_errno(errno));
-    } while(input[input.size() - 1] != '\n');
+    } while(input != '\n');
 
-    return input;
+    return retValue;
 }
 
+std::string FileIOCalls::read_data(size_t count) {
+    void* buffer;
+    char input;
+    std::string retValue;
+
+    do {
+        int ret = read(file_desc,buffer,1);
+        if(ret > 0) { // Successful Read
+            input = *reinterpret_cast<char*>(buffer);
+            std::cout << "\nNumber of bytes read: " << ret << std::endl;
+            retValue = retValue + input;
+        }
+        else if(ret == 0) // EOF
+            std::cout << "EOF detected!!!" << std::endl;
+        else
+            throw std::runtime_error("Error in FileIOCall.cpp : Failed to read from file!!!\nError is: " + Lunyx::find_errno(errno));
+    } while(input != '\n');
+
+    return retValue;
+}
+
+void Lunyx::FileIOCalls::cd_path() {
+    fp.cd_path();
+}
 
 FileIOCalls::~FileIOCalls() {
     close(file_desc);

@@ -21,11 +21,13 @@ namespace Lunyx {
 
         ~FileIOCalls();
 
+        void cd_path();
+
         size_t write_data(const std::string& input);
 
-        std::string& read_data();
+        std::string read_data();
 
-        std::string& read_data(size_t count);
+        std::string read_data(size_t count);
     };
 }
 
