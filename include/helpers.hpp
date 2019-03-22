@@ -9,9 +9,11 @@ namespace Lunyx {
 
     std::string find_errno(const int& error_code);
 
+    bool has_it(const std::string& str, char match);
+
     struct FilePath {
         std::string filename;
-        std::string pathname;
+        std::string relative_path;
         std::string absolute_path;
         size_t slash_count = 0;
 

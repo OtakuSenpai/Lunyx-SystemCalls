@@ -17,6 +17,80 @@ int Lunyx::FilePath::num_of_slashes(const std::string& file) {
     return count;
 }
 
+Lunyx::FilePath::FilePath(const std::string& path) {
+    absolute_path = path;
+    slash_count = num_of_slashes(path);
+
+    std::string temp, tempFile = path,file;
+    size_t count = slash_count;
+
+    bool first = true;
+
+    do {
+        if(count > 0) {
+            file = tempFile.substr(0, tempFile.find('/'));
+            temp = tempFile.substr(tempFile.find('/') + 1, tempFile.length());
+            tempFile = temp;
+
+            if(relative_path == "/" || first) {
+                first = false;
+                continue;
+            }
+            else if(!first)
+                relative_path = relative_path + '/' + file;
+
+            if(temp.find('/') == std::string::npos)
+                break;
+
+            --count;
+        }
+    } while(count != 1);
+
+    if(Lunyx::has_it(temp,'/')) {
+        filename = temp.substr(temp.find('/') + 1,temp.size());
+    }
+    else
+        filename = temp;
+}
+
+
+void Lunyx::FilePath::cd_path() {
+    std::string temp1, temp2, tmpPath = relative_path;
+    std::string cdpath;
+
+    size_t count = slash_count - 1;
+    bool first = true;
+
+    std::cout << "Relative Path: " << tmpPath << std::endl;
+
+    do {
+        if(count > 0) {
+            temp1 = tmpPath.substr(0, tmpPath.find('/'));
+            temp2 = tmpPath.substr(tmpPath.find('/') + 1, tmpPath.length());
+            tmpPath = temp2;
+
+            if(tmpPath == "/" || first) {
+                first = false;
+                continue;
+            }
+            else if(!first){
+                cdpath = cdpath + '/' + temp1;
+                std::cout << "Moving to: " << cdpath << std::endl;
+                chdir(cdpath.c_str());
+                cdpath.clear();
+            }
+
+            if(tmpPath.find('/') == std::string::npos)
+                break;
+
+            --count;
+        }
+    } while(count != 1);
+
+    temp2 = tmpPath.substr(tmpPath.find('/') + 1, tmpPath.length()) + '/';
+    chdir(temp2.c_str());
+}
+
 std::string Lunyx::find_errno(const int& error_code) {
     std::string retValue;
 
@@ -60,52 +134,12 @@ std::string Lunyx::find_errno(const int& error_code) {
     return retValue;
 }
 
-Lunyx::FilePath::FilePath(const std::string& path) {
-    absolute_path = path;
-    slash_count = num_of_slashes(path);
+bool Lunyx::has_it(const std::string &str, char match) {
+    bool found = false;
 
-    std::string temp, tempFile = path,file;
-    size_t count = slash_count;
+    for(auto i = str.begin(); i != str.end(); i++)
+        if(*i == match)
+            found = true;
 
-    bool first = true;
-
-    do {
-        std::cout << "\nCount: " << count << std::endl;
-        if(count > 0) {
-            file = tempFile.substr(0, tempFile.find('/'));
-            temp = tempFile.substr(tempFile.find('/') + 1, tempFile.length());
-            tempFile = temp;
-
-            if(pathname == "/" || first) {
-                first = false;
-                continue;
-            }
-            else if(!first)
-                pathname = pathname + '/' + file;
-
-            if(temp.find('/') == std::string::npos)
-                break;
-
-            std::cout << "Path: " << pathname << std::endl;
-            std::cout << "Temp: " << temp << std::endl;
-            std::cout << "TempFile: " << tempFile << std::endl;
-
-            --count;
-        }
-    } while(count != 1);
-
-    filename = temp.substr(temp.find('/') + 1,temp.size());
-}
-
-
-void Lunyx::FilePath::cd_path() {
-
-    std::string temp1, temp2, tmpPath = pathname;
-
-    while(auto v = (pathname.find('/') != std::string::npos)) {
-        temp1 = tmpPath.substr(0, v);
-        temp2 = temp1;
-        temp1 = temp2.substr(v + 1, temp2.length());
-        std::cout << "temp is: " << temp1 << std::endl;
-    }
+    return found;
 }
